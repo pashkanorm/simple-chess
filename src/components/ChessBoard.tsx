@@ -29,7 +29,7 @@ const ChessBoard: React.FC = () => {
   const isViewingHistory = currentMoveIndex !== null;
 
   const handleClick = (square: Square) => {
-    if (isViewingHistory) return; // disable piece moves if viewing history
+    if (isViewingHistory) return;
 
     const piece = game.get(square);
     const isSquareEmpty = !piece;
@@ -61,13 +61,11 @@ const ChessBoard: React.FC = () => {
 
   const jumpToMove = (index: number | null) => {
     if (index === null) {
-      // Go to live state, apply all moves
       game.reset();
       moveHistory.forEach((move) => game.move(move));
       setCurrentMoveIndex(null);
       setLastMove(moveHistory[moveHistory.length - 1] ?? null);
     } else if (index < 0) {
-      // Start position (no moves)
       game.reset();
       setCurrentMoveIndex(-1);
       setLastMove(null);
@@ -86,7 +84,6 @@ const ChessBoard: React.FC = () => {
 
   const handleUndo = () => {
     if (isViewingHistory) {
-      // go one move back, clamp to -1
       const newIndex = currentMoveIndex !== null ? currentMoveIndex - 1 : -1;
       jumpToMove(newIndex >= -1 ? newIndex : -1);
     } else {
@@ -105,32 +102,25 @@ const ChessBoard: React.FC = () => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         if (moveHistory.length === 0) return;
-
         if (currentMoveIndex === -1) return;
-
         if (currentMoveIndex === null) {
           jumpToMove(moveHistory.length - 1);
           return;
         }
-
         if (currentMoveIndex > -1) {
           jumpToMove(currentMoveIndex - 1);
         }
       } else if (e.key === "ArrowRight") {
         if (moveHistory.length === 0) return;
-
         if (currentMoveIndex === null) return;
-
         if (currentMoveIndex === -1) {
           jumpToMove(0);
           return;
         }
-
         if (currentMoveIndex < moveHistory.length - 1) {
           jumpToMove(currentMoveIndex + 1);
           return;
         }
-
         if (currentMoveIndex === moveHistory.length - 1) {
           jumpToMove(null);
           return;
@@ -177,7 +167,6 @@ const ChessBoard: React.FC = () => {
             {piece ? unicodeMap[piece.color === "w" ? piece.type.toUpperCase() : piece.type] : ""}
           </span>
 
-          {/* Show legal move indicators */}
           {!isViewingHistory && isLegal && !legalMoveForSquare?.flags.includes("c") && (
             <div className="legal-dot" />
           )}
@@ -206,7 +195,6 @@ const ChessBoard: React.FC = () => {
           {moveHistory.length === 0 ? (
             <p style={{ minHeight: "1.5em" }}>No moves made yet.</p>
           ) : (
-            /* keep height so no jump */
             <ol>
               {moveHistory.map((move, i) => {
                 const moveNumber = Math.floor(i / 2) + 1;
@@ -226,7 +214,7 @@ const ChessBoard: React.FC = () => {
           )}
         </div>
 
-        <div className="board-container">
+        <div className="board-and-button">
           <div className="board">{boardSquares.flat()}</div>
           <button
             className="undo-button"
