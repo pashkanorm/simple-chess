@@ -11,7 +11,7 @@
 
 .board-and-history {
   display: flex;
-  flex-direction: row; /* side by side */
+  flex-direction: row;
   align-items: flex-start;
   margin: 40px auto;
   width: fit-content;
@@ -145,7 +145,7 @@
 
 .move-history-panel {
   max-width: 400px;
-  min-width: 150px; /* or any fixed value */
+  min-width: 150px;
   width: 150px;
   padding-right: 8px;
   min-height: 10em;
@@ -177,7 +177,7 @@
 }
 
 .move-history-panel p {
-  min-height: 1.5em; /* reserve space even when empty */
+  min-height: 1.5em;
   margin: 0;
   padding: 6px 10px;
   border-radius: 6px;

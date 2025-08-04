@@ -101,46 +101,36 @@ const ChessBoard: React.FC = () => {
     setLegalMoves([]);
   };
 
-  // Keyboard navigation for history: clamp between -1 and last move index
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        // If no moves, do nothing
         if (moveHistory.length === 0) return;
 
-        // At start -1, do nothing
         if (currentMoveIndex === -1) return;
 
-        // At live state (null), go to last move
         if (currentMoveIndex === null) {
           jumpToMove(moveHistory.length - 1);
           return;
         }
 
-        // Else go one move back if possible
         if (currentMoveIndex > -1) {
           jumpToMove(currentMoveIndex - 1);
         }
       } else if (e.key === "ArrowRight") {
-        // If no moves, do nothing
         if (moveHistory.length === 0) return;
 
-        // At live state (null), do nothing
         if (currentMoveIndex === null) return;
 
-        // At start (-1), go to 0 (first move)
         if (currentMoveIndex === -1) {
           jumpToMove(0);
           return;
         }
 
-        // If not at last move, go forward one move
         if (currentMoveIndex < moveHistory.length - 1) {
           jumpToMove(currentMoveIndex + 1);
           return;
         }
 
-        // If at last move, go live (null)
         if (currentMoveIndex === moveHistory.length - 1) {
           jumpToMove(null);
           return;
@@ -203,7 +193,7 @@ const ChessBoard: React.FC = () => {
     <>
       <div className="status">
         {isGameOver ? (
-          <>Game Over — {isDraw ? "Draw" : game.turn() === "w" ? "Black" : "White"} wins</>
+          <>Checkmate — {isDraw ? "Draw" : game.turn() === "w" ? "Black" : "White"} wins</>
         ) : isCheck ? (
           <>Check!</>
         ) : (
