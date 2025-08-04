@@ -9,8 +9,17 @@
   overflow: visible;
 }
 
-.board-container {
+.board-and-history {
+  display: flex;
+  flex-direction: row; /* side by side */
+  align-items: flex-start;
   margin: 40px auto;
+  width: fit-content;
+  gap: 20px;
+}
+
+.board-container {
+  margin: 0;
   position: relative;
   width: fit-content;
 }
@@ -30,6 +39,32 @@
 
 .last-move-light {
   background-color: #f6f669 !important;
+}
+
+.legal-dot {
+  width: 24px;
+  height: 24px;
+  background-color: rgba(20, 20, 20, 0.5);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.legal-ring {
+  width: 100px;
+  height: 100px;
+  border: 8px solid rgba(20, 20, 20, 0.6);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .legal {
@@ -108,28 +143,42 @@
   background-color: #666;
 }
 
-.legal-dot {
-  width: 24px;
-  height: 24px;
-  background-color: rgba(20, 20, 20, 0.5);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 1;
+.move-history-panel {
+  max-width: 400px;
+  min-width: 150px; /* or any fixed value */
+  width: 150px;
+  padding-right: 8px;
+  min-height: 10em;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  user-select: none;
+  margin-left: 0;
 }
 
-.legal-ring {
-  width: 100px;
-  height: 100px;
-  border: 8px solid rgba(20, 20, 20, 0.6);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 1;
+.move-history-panel ol {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.move-history-panel li {
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.move-history-panel li:hover {
+  background-color: #ddd;
+}
+
+.move-history-panel li.current-move {
+  background-color: #0077ff;
+  color: white;
+  font-weight: bold;
+}
+
+.move-history-panel p {
+  min-height: 1.5em; /* reserve space even when empty */
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
 }
