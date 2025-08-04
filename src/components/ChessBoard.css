@@ -1,0 +1,50 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 80px);
+  grid-template-rows: repeat(8, 80px);
+  border: 4px solid #444;
+  margin: 40px auto;
+  width: fit-content;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.light {
+  background-color: #eeeed2;
+}
+
+.dark {
+  background-color: #769656;
+}
+
+.selected {
+  outline: 3px solid orange;
+}
+
+.legal {
+  background-color: #baca44 !important;
+}
+
+.piece {
+  user-select: none;
+  pointer-events: none;
+}
+
+.controls {
+  text-align: center;
+  margin-top: 20px;
+}
+
+h2,
+h3 {
+  text-align: center;
+}
