@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Chess, Square } from "chess.js";
+import { Chess, Square, Move } from "chess.js";
 import "./ChessBoard.css";
 
 const unicodeMap: Record<string, string> = {
@@ -21,7 +21,7 @@ const ChessBoard: React.FC = () => {
   const [game] = useState(new Chess());
   const [, forceRender] = useState(0);
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
-  const [legalMoves, setLegalMoves] = useState<Square[]>([]);
+  const [legalMoves, setLegalMoves] = useState<Move[]>([]);
   const [lastMove, setLastMove] = useState<{ from: Square; to: Square } | null>(null);
   const [moveHistory, setMoveHistory] = useState<{ from: Square; to: Square }[]>([]);
 
@@ -34,7 +34,7 @@ const ChessBoard: React.FC = () => {
     const piece = game.get(square);
     const isSquareEmpty = !piece;
 
-    if (selectedSquare && legalMoves.includes(square)) {
+    if (selectedSquare && legalMoves.some((m) => m.to === square)) {
       const move = game.move({ from: selectedSquare, to: square, promotion: "q" });
       if (move) {
         const newMove = { from: move.from as Square, to: move.to as Square };
@@ -48,7 +48,7 @@ const ChessBoard: React.FC = () => {
       const moves = game.moves({ square, verbose: true });
       if (moves.length > 0) {
         setSelectedSquare(square);
-        setLegalMoves(moves.map((m) => m.to as Square));
+        setLegalMoves(moves);
       } else {
         setSelectedSquare(null);
         setLegalMoves([]);
@@ -76,7 +76,11 @@ const ChessBoard: React.FC = () => {
       const isDark = (rowIndex + colIndex) % 2 === 1;
 
       const isSelected = selectedSquare === square && game.get(square);
-      const isLegal = legalMoves.includes(square);
+
+      // Determine if this square is a legal destination
+      const moveTo = legalMoves.find((m) => m.to === square);
+      const isLegal = !!moveTo;
+      const isCapture = moveTo?.flags.includes("c");
 
       const isLastMoveFrom = lastMove?.from === square;
       const isLastMoveTo = lastMove?.to === square;
@@ -87,7 +91,6 @@ const ChessBoard: React.FC = () => {
         "square",
         isDark ? "dark" : "light",
         isSelected ? `selected ${isDark ? "dark" : "light"}` : "",
-        isLegal ? "legal" : "",
         isLastMoveFrom || isLastMoveTo ? (isDark ? "last-move-dark" : "last-move-light") : "",
         isKingInCheckSquare ? "check-king" : "",
       ]
@@ -96,9 +99,15 @@ const ChessBoard: React.FC = () => {
 
       return (
         <div key={square} className={squareClass} onClick={() => handleClick(square)}>
-          <span className={`piece ${piece?.color === "w" ? "white" : "black"}`}>
-            {piece ? unicodeMap[piece.color === "w" ? piece.type.toUpperCase() : piece.type] : ""}
-          </span>
+          {piece && (
+            <span className={`piece ${piece.color === "w" ? "white" : "black"}`}>
+              {unicodeMap[piece.color === "w" ? piece.type.toUpperCase() : piece.type]}
+            </span>
+          )}
+
+          {/* LEGAL MOVE INDICATORS */}
+          {isLegal && !isCapture && <div className="legal-dot" />}
+          {isLegal && isCapture && <div className="legal-ring" />}
         </div>
       );
     })
@@ -108,7 +117,7 @@ const ChessBoard: React.FC = () => {
     <>
       <div className="status">
         {isGameOver ? (
-          <>Game Over — {isDraw ? "Draw" : game.turn() === "w" ? "Black" : "White"} wins</>
+          <>Checkmate — {isDraw ? "Draw" : game.turn() === "w" ? "Black" : "White"} wins</>
         ) : isCheck ? (
           <>Check!</>
         ) : (
